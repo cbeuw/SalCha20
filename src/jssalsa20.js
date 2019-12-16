@@ -69,24 +69,24 @@ var JSSalsa20 = function (key, nonce) {
     // Constant
     this.sigma[0],
     // Key
-    this._get32(key, 0),
-    this._get32(key, 4),
-    this._get32(key, 8),
-    this._get32(key, 12),
+    _get32(key, 0),
+    _get32(key, 4),
+    _get32(key, 8),
+    _get32(key, 12),
     this.sigma[1],
     // Nonce
-    this._get32(nonce, 0),
-    this._get32(nonce, 4),
+    _get32(nonce, 0),
+    _get32(nonce, 4),
     // Counter
     0,
     0,
     // Constant
     this.sigma[2],
     // Key
-    this._get32(key, 16),
-    this._get32(key, 20),
-    this._get32(key, 24),
-    this._get32(key, 28),
+    _get32(key, 16),
+    _get32(key, 20),
+    _get32(key, 24),
+    _get32(key, 28),
     // Const
     this.sigma[3]
   ]
@@ -207,7 +207,7 @@ JSSalsa20.prototype._salsa = function () {
  * @return {number}
  * @private
  */
-JSSalsa20.prototype._get32 = function (data, index) {
+const _get32 = function (data, index) {
   return data[index++] ^ (data[index++] << 8) ^ (data[index++] << 16) ^ (data[index] << 24)
 }
 
