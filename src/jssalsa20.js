@@ -163,6 +163,13 @@ JSSalsa20.prototype._salsa = function () {
   var i = 0
   var b = 0
 
+  var qr = function (a, b, c, d) {
+    mix[b] ^= _rotl(mix[a] + mix[d], 7) >>> 0
+    mix[c] ^= _rotl(mix[b] + mix[a], 9) >>> 0
+    mix[d] ^= _rotl(mix[c] + mix[b], 13) >>> 0
+    mix[a] ^= _rotl(mix[d] + mix[c], 18) >>> 0
+  }
+
   // copy param array to mix //
   for (i = 0; i < 16; i++) {
     mix[i] = this.param[i]
@@ -170,38 +177,14 @@ JSSalsa20.prototype._salsa = function () {
 
   // mix rounds //
   for (i = 0; i < this.rounds; i += 2) {
-    mix[4] = (mix[4] ^ this._rotl(mix[0] + mix[12], 7)) >>> 0
-    mix[8] = (mix[8] ^ this._rotl(mix[4] + mix[0], 9)) >>> 0
-    mix[12] = (mix[12] ^ this._rotl(mix[8] + mix[4], 13)) >>> 0
-    mix[0] = (mix[0] ^ this._rotl(mix[12] + mix[8], 18)) >>> 0
-    mix[9] = (mix[9] ^ this._rotl(mix[5] + mix[1], 7)) >>> 0
-    mix[13] = (mix[13] ^ this._rotl(mix[9] + mix[5], 9)) >>> 0
-    mix[1] = (mix[1] ^ this._rotl(mix[13] + mix[9], 13)) >>> 0
-    mix[5] = (mix[5] ^ this._rotl(mix[1] + mix[13], 18)) >>> 0
-    mix[14] = (mix[14] ^ this._rotl(mix[10] + mix[6], 7)) >>> 0
-    mix[2] = (mix[2] ^ this._rotl(mix[14] + mix[10], 9)) >>> 0
-    mix[6] = (mix[6] ^ this._rotl(mix[2] + mix[14], 13)) >>> 0
-    mix[10] = (mix[10] ^ this._rotl(mix[6] + mix[2], 18)) >>> 0
-    mix[3] = (mix[3] ^ this._rotl(mix[15] + mix[11], 7)) >>> 0
-    mix[7] = (mix[7] ^ this._rotl(mix[3] + mix[15], 9)) >>> 0
-    mix[11] = (mix[11] ^ this._rotl(mix[7] + mix[3], 13)) >>> 0
-    mix[15] = (mix[15] ^ this._rotl(mix[11] + mix[7], 18)) >>> 0
-    mix[1] = (mix[1] ^ this._rotl(mix[0] + mix[3], 7)) >>> 0
-    mix[2] = (mix[2] ^ this._rotl(mix[1] + mix[0], 9)) >>> 0
-    mix[3] = (mix[3] ^ this._rotl(mix[2] + mix[1], 13)) >>> 0
-    mix[0] = (mix[0] ^ this._rotl(mix[3] + mix[2], 18)) >>> 0
-    mix[6] = (mix[6] ^ this._rotl(mix[5] + mix[4], 7)) >>> 0
-    mix[7] = (mix[7] ^ this._rotl(mix[6] + mix[5], 9)) >>> 0
-    mix[4] = (mix[4] ^ this._rotl(mix[7] + mix[6], 13)) >>> 0
-    mix[5] = (mix[5] ^ this._rotl(mix[4] + mix[7], 18)) >>> 0
-    mix[11] = (mix[11] ^ this._rotl(mix[10] + mix[9], 7)) >>> 0
-    mix[8] = (mix[8] ^ this._rotl(mix[11] + mix[10], 9)) >>> 0
-    mix[9] = (mix[9] ^ this._rotl(mix[8] + mix[11], 13)) >>> 0
-    mix[10] = (mix[10] ^ this._rotl(mix[9] + mix[8], 18)) >>> 0
-    mix[12] = (mix[12] ^ this._rotl(mix[15] + mix[14], 7)) >>> 0
-    mix[13] = (mix[13] ^ this._rotl(mix[12] + mix[15], 9)) >>> 0
-    mix[14] = (mix[14] ^ this._rotl(mix[13] + mix[12], 13)) >>> 0
-    mix[15] = (mix[15] ^ this._rotl(mix[14] + mix[13], 18)) >>> 0
+    qr(0, 4, 8, 12)
+    qr(5, 9, 13, 1)
+    qr(10, 14, 2, 6)
+    qr(15,  3,  7, 11)
+    qr( 0,  1,  2,  3)
+    qr( 5,  6,  7,  4)
+    qr(10, 11,  8,  9)
+    qr(15, 12, 13, 14)
   }
 
   for (i = 0; i < 16; i++) {
@@ -236,7 +219,7 @@ JSSalsa20.prototype._get32 = function (data, index) {
  * @return {number}
  * @private
  */
-JSSalsa20.prototype._rotl = function (data, shift) {
+const _rotl = function (data, shift) {
   return ((data << shift) | (data >>> (32 - shift)))
 }
 
