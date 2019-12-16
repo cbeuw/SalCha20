@@ -163,7 +163,7 @@ JSSalsa20.prototype._salsa = function () {
   var i = 0
   var b = 0
 
-  var qr = function (a, b, c, d) {
+  const qr = function (a, b, c, d) {
     mix[b] ^= _rotl(mix[a] + mix[d], 7) >>> 0
     mix[c] ^= _rotl(mix[b] + mix[a], 9) >>> 0
     mix[d] ^= _rotl(mix[c] + mix[b], 13) >>> 0
@@ -180,10 +180,10 @@ JSSalsa20.prototype._salsa = function () {
     qr(0, 4, 8, 12)
     qr(5, 9, 13, 1)
     qr(10, 14, 2, 6)
-    qr(15,  3,  7, 11)
-    qr( 0,  1,  2,  3)
-    qr( 5,  6,  7,  4)
-    qr(10, 11,  8,  9)
+    qr(15, 3, 7, 11)
+    qr(0, 1, 2, 3)
+    qr(5, 6, 7, 4)
+    qr(10, 11, 8, 9)
     qr(15, 12, 13, 14)
   }
 
