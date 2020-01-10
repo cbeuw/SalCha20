@@ -6,13 +6,12 @@
 
 import test from 'tape'
 import Chacha20 from '../src/chacha20.mjs'
+import crypto from 'crypto'
 
 /**
  * Encrypt / Decrypt
  */
 test('Encrypt and decrypt for 256 byte should be same', tape => {
-  const crypto = require('crypto')
-
   const key = new Uint8Array(crypto.randomBytes(32))
   const nonce = new Uint8Array(crypto.randomBytes(8))
   const data = new Uint8Array(crypto.randomBytes(4096))

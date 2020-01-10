@@ -223,7 +223,4 @@ const _rotl = function (data, shift) {
   return ((data << shift) | (data >>> (32 - shift)))
 }
 
-// EXPORT //
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = Salsa20
-}
+export default Salsa20
