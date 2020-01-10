@@ -5,7 +5,7 @@
  */
 
 import test from 'tape'
-import JSChacha20 from '../src/jschacha20.mjs'
+import Chacha20 from '../src/chacha20.mjs'
 
 /**
  * Encrypt / Decrypt
@@ -17,8 +17,8 @@ test('Encrypt and decrypt for 256 byte should be same', tape => {
   const nonce = new Uint8Array(crypto.randomBytes(8))
   const data = new Uint8Array(crypto.randomBytes(4096))
 
-  const encoder = new JSChacha20(key, nonce)
-  const decoder = new JSChacha20(key, nonce)
+  const encoder = new Chacha20(key, nonce)
+  const decoder = new Chacha20(key, nonce)
 
   const encr = encoder.encrypt(data)
   const decr = decoder.decrypt(encr)
@@ -38,7 +38,7 @@ test('Key stream should be equal to the reference', tape => {
 
   const nonce = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0])
 
-  const cipher = new JSChacha20(key, nonce)
+  const cipher = new Chacha20(key, nonce)
 
   const expStream = new Uint8Array([
     0x76, 0xb8, 0xe0, 0xad, 0xa0, 0xf1, 0x3d, 0x90, 0x40, 0x5d, 0x6a, 0xe5, 0x53, 0x86, 0xbd, 0x28,

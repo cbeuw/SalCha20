@@ -54,7 +54,7 @@
  * @param {Uint8Array} key
  * @param {Uint8Array} nonce
  */
-var JSSalsa20 = function (key, nonce) {
+var Salsa20 = function (key, nonce) {
   if (!(key instanceof Uint8Array) || key.length !== 32) {
     throw new Error('Key should be 32 byte array!')
   }
@@ -110,7 +110,7 @@ var JSSalsa20 = function (key, nonce) {
  * @return {Uint8Array}
  * @private
  */
-JSSalsa20.prototype._update = function (data) {
+Salsa20.prototype._update = function (data) {
   if (!(data instanceof Uint8Array) || data.length === 0) {
     throw new Error('Data should be type of bytes (Uint8Array) and not empty!')
   }
@@ -136,7 +136,7 @@ JSSalsa20.prototype._update = function (data) {
  * @param {Uint8Array} data
  * @return {Uint8Array}
  */
-JSSalsa20.prototype.encrypt = function (data) {
+Salsa20.prototype.encrypt = function (data) {
   return this._update(data)
 }
 
@@ -146,11 +146,11 @@ JSSalsa20.prototype.encrypt = function (data) {
  * @param {Uint8Array} data
  * @return {Uint8Array}
  */
-JSSalsa20.prototype.decrypt = function (data) {
+Salsa20.prototype.decrypt = function (data) {
   return this._update(data)
 }
 
-JSSalsa20.prototype._counterIncrement = function () {
+Salsa20.prototype._counterIncrement = function () {
   // Max possible blocks is 2^64
   this.param[8] = (this.param[8] + 1) >>> 0
   if (this.param[8] === 0) {
@@ -158,7 +158,7 @@ JSSalsa20.prototype._counterIncrement = function () {
   }
 }
 
-JSSalsa20.prototype._salsa = function () {
+Salsa20.prototype._salsa = function () {
   var mix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   var i = 0
   var b = 0
@@ -225,5 +225,5 @@ const _rotl = function (data, shift) {
 
 // EXPORT //
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = JSSalsa20
+  module.exports = Salsa20
 }

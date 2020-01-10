@@ -8,7 +8,7 @@
  * @param {Uint8Array} key
  * @param {Uint8Array} nonce
  */
-var JSChacha20 = function (key, nonce) {
+var Chacha20 = function (key, nonce) {
     if (!(key instanceof Uint8Array) || key.length !== 32) {
       throw new Error('Key should be 32 byte array!')
     }
@@ -63,7 +63,7 @@ var JSChacha20 = function (key, nonce) {
    * @return {Uint8Array}
    * @private
    */
-  JSChacha20.prototype._update = function (data) {
+  Chacha20.prototype._update = function (data) {
     if (!(data instanceof Uint8Array) || data.length === 0) {
       throw new Error('Data should be type of bytes (Uint8Array) and not empty!')
     }
@@ -89,7 +89,7 @@ var JSChacha20 = function (key, nonce) {
    * @param {Uint8Array} data
    * @return {Uint8Array}
    */
-  JSChacha20.prototype.encrypt = function (data) {
+  Chacha20.prototype.encrypt = function (data) {
     return this._update(data)
   }
   
@@ -99,11 +99,11 @@ var JSChacha20 = function (key, nonce) {
    * @param {Uint8Array} data
    * @return {Uint8Array}
    */
-  JSChacha20.prototype.decrypt = function (data) {
+  Chacha20.prototype.decrypt = function (data) {
     return this._update(data)
   }
   
-  JSChacha20.prototype._counterIncrement = function () {
+  Chacha20.prototype._counterIncrement = function () {
     // Max possible blocks is 2^64
     this.param[12] = (this.param[12] + 1) >>> 0
     if (this.param[12] === 0) {
@@ -111,7 +111,7 @@ var JSChacha20 = function (key, nonce) {
     }
   }
   
-  JSChacha20.prototype._chacha = function () {
+  Chacha20.prototype._chacha = function () {
     var mix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     var i = 0
     var b = 0
@@ -189,5 +189,5 @@ var JSChacha20 = function (key, nonce) {
   
   // EXPORT //
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = JSChacha20
+    module.exports = Chacha20
   }

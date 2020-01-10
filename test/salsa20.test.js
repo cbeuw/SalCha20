@@ -5,27 +5,27 @@
  */
 
 import test from 'tape'
-import JSSalsa20 from '../src/jssalsa20.mjs'
+import Salsa20 from '../src/salsa20.mjs'
 
 /**
  * General Test
  */
 test("Class 'JSSalsa20' should exists", tape => {
-  const salsa = new JSSalsa20(new Uint8Array(32), new Uint8Array(8))
-  tape.assert(salsa instanceof JSSalsa20)
+  const salsa = new Salsa20(new Uint8Array(32), new Uint8Array(8))
+  tape.assert(salsa instanceof Salsa20)
 
   tape.end()
 })
 
 test("Function 'encrypt' should exists", tape => {
-  const salsa = new JSSalsa20(new Uint8Array(32), new Uint8Array(8))
+  const salsa = new Salsa20(new Uint8Array(32), new Uint8Array(8))
   tape.assert(typeof salsa.encrypt === 'function')
 
   tape.end()
 })
 
 test("Function 'decrypt' should exists", tape => {
-  const salsa = new JSSalsa20(new Uint8Array(32), new Uint8Array(8))
+  const salsa = new Salsa20(new Uint8Array(32), new Uint8Array(8))
   tape.assert(typeof salsa.decrypt === 'function')
 
   tape.end()
@@ -36,7 +36,7 @@ test("Function 'decrypt' should exists", tape => {
  */
 test('When set key with length not 32 byte, error should be thrown', tape => {
   tape.throws(() => {
-    new JSSalsa20(null, null)
+    new Salsa20(null, null)
   }, /Key should be 32 byte array!/)
 
   tape.end()
@@ -44,7 +44,7 @@ test('When set key with length not 32 byte, error should be thrown', tape => {
 
 test('When set nonce with length not 8 byte, error should be thrown', tape => {
   tape.throws(() => {
-    new JSSalsa20(new Uint8Array(32), null)
+    new Salsa20(new Uint8Array(32), null)
   }, /Nonce should be 8 byte array!/)
 
   tape.end()
@@ -52,7 +52,7 @@ test('When set nonce with length not 8 byte, error should be thrown', tape => {
 
 test('When not bytes pass to encryt/decrypt method, error should be thrown', tape => {
   tape.throws(() => {
-    new JSSalsa20(new Uint8Array(32), new Uint8Array(8)).encrypt(null)
+    new Salsa20(new Uint8Array(32), new Uint8Array(8)).encrypt(null)
   }, /Data should be type of bytes \(Uint8Array\) and not empty!/)
 
   tape.end()
@@ -68,8 +68,8 @@ test('Encrypt and decrypt for 256 byte should be same', tape => {
   const nonce = new Uint8Array(crypto.randomBytes(8))
   const data = new Uint8Array(crypto.randomBytes(4096))
 
-  const encoder = new JSSalsa20(key, nonce)
-  const decoder = new JSSalsa20(key, nonce)
+  const encoder = new Salsa20(key, nonce)
+  const decoder = new Salsa20(key, nonce)
 
   const encr = encoder.encrypt(data)
   const decr = decoder.decrypt(encr)
@@ -102,7 +102,7 @@ test('First block and param should be equal to reference', tape => {
 
   const nonce = new Uint8Array([3, 1, 4, 1, 5, 9, 2, 6])
 
-  const instance = new JSSalsa20(key, nonce)
+  const instance = new Salsa20(key, nonce)
 
   // Set block count to 7 //
   instance.param[8] = 7
