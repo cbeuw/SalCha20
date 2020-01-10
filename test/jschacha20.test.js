@@ -5,7 +5,7 @@
  */
 
 import test from 'tape'
-import JSChacha20 from '../src/jschacha20'
+import JSChacha20 from '../src/jschacha20.mjs'
 
 /**
  * Encrypt / Decrypt

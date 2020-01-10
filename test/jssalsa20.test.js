@@ -5,7 +5,7 @@
  */
 
 import test from 'tape'
-import JSSalsa20 from '../src/jssalsa20'
+import JSSalsa20 from '../src/jssalsa20.mjs'
 
 /**
  * General Test
