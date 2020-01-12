@@ -3,6 +3,8 @@
 //
 // Implementation derived from poly1305-donna-16.h
 // See for details: https://github.com/floodyberry/poly1305-donna
+//
+// Modified by cbeuw (Andy Wang)
  
 var Poly1305KeySize = 32;
 var Poly1305TagSize = 16;
@@ -94,7 +96,8 @@ Poly1305.prototype.blocks = function(m, mpos, bytes) {
   }
 };
 
-Poly1305.prototype.update = function(m, bytes) {
+Poly1305.prototype.update = function(m) {
+  var bytes = m.length
   var want = 0, i = 0, mpos = 0;
  
   if (this.leftover) {
@@ -202,3 +205,4 @@ Poly1305.prototype.finish = function() {
 
   return mac;
 };
+export default Poly1305
