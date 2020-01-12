@@ -1,87 +1,76 @@
+import Poly1305 from "./poly1305.mjs"
+import Chacha20 from "./chacha20.mjs"
+
 // https://github.com/devi/chacha20poly1305/blob/master/chacha20poly1305.js
 // Written in 2014 by Devi Mandiri. Public domain.
 
-function store64(dst, num) {
-    var hi = 0, lo = num >>> 0;
-    if ((+(Math.abs(num))) >= 1) {
-      if (num > 0) {
-        hi = ((Math.min((+(Math.floor(num/4294967296))), 4294967295))|0) >>> 0;
-      } else {
-        hi = (~~((+(Math.ceil((num - +(((~~(num)))>>>0))/4294967296))))) >>> 0;
-      }
-    }
-    dst.push(lo & 0xff); lo >>>= 8;
-    dst.push(lo & 0xff); lo >>>= 8;
-    dst.push(lo & 0xff); lo >>>= 8;
-    dst.push(lo & 0xff);
-    dst.push(hi & 0xff); hi >>>= 8;
-    dst.push(hi & 0xff); hi >>>= 8;
-    dst.push(hi & 0xff); hi >>>= 8;
-    dst.push(hi & 0xff);
-  }
+var Chacha20Poly1305 = function (key, nonce) {
+    this.chachaKey = key
+    this.nonce = nonce
+    this.chacha20 = new Chacha20(key, nonce)
+    this.polykey = this._genPolyKey(key, nonce)
+    this.poly1305 = new Poly1305(this.polykey)
+}
   
-  function aead_mac(polykey, data, ciphertext) {
-    var dlen = data.length,
-        clen = ciphertext.length,
-        dpad = dlen % 16,
-        cpad = clen % 16,
-        m = [], i;
-  
-    for (i = 0; i < dlen; i++) m.push(data[i]);
-  
-    if (dpad !== 0) {
+const _constructAEAD = function(data, ciphertext) {
+  const dlen = data.length
+  const clen = ciphertext.length
+  const dpad = dlen % 16
+  const cpad = clen % 16
+  var m = [] 
+  var i
+
+  for (i = 0; i < dlen; i++) m.push(data[i]);
+
+  if (dpad !== 0) {
       for (i = (16 - dpad); i--;) m.push(0);
-    }
-  
-    for (i = 0; i < clen; i++) m.push(ciphertext[i]);
-  
-    if (cpad !== 0) {
+  }
+
+  for (i = 0; i < clen; i++) m.push(ciphertext[i]);
+
+  if (cpad !== 0) {
       for (i = (16 - cpad); i--;) m.push(0);
-    }
-  
-    store64(m, dlen);
-    store64(m, clen);
-  
-    return poly1305_auth(m, m.length, polykey);
   }
-  
-  function aead_encrypt(key, nonce, plaintext, data) {
-    var plen = plaintext.length,
-        buf = new Uint8Array(plen),
-        ciphertext = new Uint8Array(plen),
-        polykey = new Uint8Array(64),
-        ctx = new Chacha20(key, nonce, 0);
-  
-    ctx.keystream(polykey, 64);
-  
-    ctx.keystream(buf, plen);
-  
-    for (var i = 0; i < plen; i++) {
-      ciphertext[i] = buf[i] ^ plaintext[i];
-    }
-  
-    return [ciphertext, aead_mac(polykey, data, ciphertext)];
+
+  const lens = new Buffer(16);
+  lens.fill(0)
+  lens.writeUInt32LE(dlen,0)
+  lens.writeUInt32LE(clen,8)
+  m.push(...lens)
+
+  return m
+}
+
+Chacha20Poly1305.prototype._genPolyKey = function() {
+  const nullBlock = new Uint8Array(Array(64).fill(0))
+  const keystream = this.chacha20.encrypt(nullBlock)
+  return keystream.slice(0,32)
+}
+
+Chacha20Poly1305.prototype.seal = function(plaintext, data) {
+  const ciphertext = this.chacha20.encrypt(plaintext)
+
+  this.poly1305.update(_constructAEAD(data, ciphertext))
+  return [ciphertext, this.poly1305.finish()];
+}
+
+const _bufEqual = function(mac1, mac2) {
+  var dif = 0;
+  for (var i = 0; i < 16; i++) {
+    dif |= (mac1[i] ^ mac2[i]);
   }
+  dif = (dif - 1) >>> 31;
+  return (dif & 1) == 1;
+}
+
+Chacha20Poly1305.prototype.open = function(ciphertext, data, mac) {
+  const plaintext = this.chacha20.decrypt(ciphertext)
   
-  function aead_decrypt(key, nonce, ciphertext, data, mac) {
-    var plen = ciphertext.length,
-        buf = new Uint8Array(plen),
-        plaintext = new Uint8Array(plen),
-        polykey = new Uint8Array(64),
-        ctx = new Chacha20(key, nonce, 0);
-  
-    ctx.keystream(polykey, 64);
-  
-    var tag = aead_mac(polykey, data, ciphertext);
-  
-    if (poly1305_verify(tag, mac) !== 1) return false;
-  
-    ctx.keystream(buf, plen);
-  
-    for (var i = 0; i < plen; i++) {
-      plaintext[i] = buf[i] ^ ciphertext[i];
-    }
-  
-    return plaintext;
-  }
-  
+  this.poly1305.update(_constructAEAD(data, ciphertext))
+  const tag = this.poly1305.finish();
+
+  if (!_bufEqual(tag, mac)) return false;
+
+  return plaintext;
+}
+export default Chacha20Poly1305
