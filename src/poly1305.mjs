@@ -10,6 +10,9 @@ var Poly1305KeySize = 32;
 var Poly1305TagSize = 16;
  
 var Poly1305 = function(key) {
+  if (!(key instanceof Uint8Array) || key.length !== 32) {
+      throw new Error('Key should be 32 byte array!')
+    }
   this.buffer = new Uint8Array(16);
   this.leftover = 0;
   this.r = new Uint16Array(10);
