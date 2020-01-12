@@ -12,13 +12,19 @@ var Chacha20 = function (key, nonce) {
     if (!(key instanceof Uint8Array) || key.length !== 32) {
       throw new Error('Key should be 32 byte array!')
     }
-  
-    if (!(nonce instanceof Uint8Array) || nonce.length !== 8) {
-      throw new Error('Nonce should be 8 byte array!')
+    this.nonceLen = nonce.length
+    if (!(nonce instanceof Uint8Array) || this.nonceLen !== 8 && this.nonceLen != 12) {
+      throw new Error('Nonce should be an 8 or 12 byte array!')
     }
   
     this.rounds = 20
     this.sigma = [0x61707865, 0x3320646e, 0x79622d32, 0x6b206574]
+    var ctrAndNonce = []
+    if (this.nonceLen == 8){
+      ctrAndNonce = [0, 0, _get32(nonce, 0), _get32(nonce, 4)]
+    } else {
+      ctrAndNonce = [0, _get32(nonce, 0), _get32(nonce, 4), _get32(nonce, 8)]
+    }
     this.param = [
       // Constant
       this.sigma[0],
@@ -36,12 +42,11 @@ var Chacha20 = function (key, nonce) {
       _get32(key, 24),
       _get32(key, 28),
 
-      // Counter
-      0,
-      0,
-      // Nonce
-      _get32(nonce, 0),
-      _get32(nonce, 4),
+      // Counter and Nonce
+      ctrAndNonce[0],
+      ctrAndNonce[1],
+      ctrAndNonce[2],
+      ctrAndNonce[3],
     ]
   
     // init block 64 bytes //
@@ -104,9 +109,9 @@ var Chacha20 = function (key, nonce) {
   }
   
   Chacha20.prototype._counterIncrement = function () {
-    // Max possible blocks is 2^64
+    // Max possible blocks is 2^64 with 8 byte nonce or 2^32 with 12 byte nonce
     this.param[12] = (this.param[12] + 1) >>> 0
-    if (this.param[12] === 0) {
+    if (this.nonceLen == 8 && this.param[12] === 0) {
       this.param[13] = (this.param[13] + 1) >>> 0
     }
   }
