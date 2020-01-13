@@ -6,11 +6,11 @@ import Chacha20 from "./chacha20.mjs"
 // Modified by cbeuw (Andy Wang)
 
 var Chacha20Poly1305 = function (key, nonce) {
-    this.chachaKey = key
-    this.nonce = nonce
-    this.chacha20 = new Chacha20(key, nonce)
-    this.polykey = this._genPolyKey(key, nonce)
-    this.poly1305 = new Poly1305(this.polykey)
+  this.chachaKey = key
+  this.nonce = nonce
+  this.chacha20 = new Chacha20(key, nonce)
+  this.polykey = this._genPolyKey(key, nonce)
+  this.poly1305 = new Poly1305(this.polykey)
 }
   
 const _constructAEAD = function(data, ciphertext) {
