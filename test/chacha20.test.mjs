@@ -1,8 +1,4 @@
 'use strict'
-/**
- * Created by Mykola Bubelich
- * 2017-01-25
- */
 
 import test from 'tape'
 import Chacha20 from '../src/chacha20.mjs'
@@ -35,7 +31,7 @@ test('Key stream should be equal to the reference', tape => {
 
   const key = new Uint8Array(Array(32).fill(0))
 
-  const nonce = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0])
+  const nonce = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
   const cipher = new Chacha20(key, nonce)
 
@@ -50,4 +46,3 @@ test('Key stream should be equal to the reference', tape => {
 
   tape.end()
 })
-
