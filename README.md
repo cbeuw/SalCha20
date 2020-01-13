@@ -1,27 +1,13 @@
-# JS-Salsa20
-Pure JavaScript Salsa20 stream cipher
-
-[![Build Status](https://travis-ci.org/thesimj/js-salsa20.svg?branch=master)](https://travis-ci.org/thesimj/js-salsa20)
-[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)
-
-### Abstract
-Salsa20 is a family of 256-bit stream ciphers designed in 2005
-and submitted to eSTREAM, the ECRYPT Stream Cipher Project.
-Salsa20 has progressed to the third round of eSTREAM without any
-changes. The 20-round stream cipher Salsa20/20 is consistently faster
-than AES and is recommended by the designer for typical cryptographic
-applications.
+# SalCha20
+Pure JavaScript Salsa20, Chacha20 and Chacha20-Poly1305 implementations
 
 ### Implementation derived from 
 - https://cr.yp.to/snuffle/salsa20/ref/salsa20.c
 - [The Salsa20 family of stream ciphers](https://cr.yp.to/snuffle/salsafamily-20071225.pdf)
 - [Salsa20 specification](https://cr.yp.to/snuffle/spec.pdf)
 - [Salsa20 design](https://cr.yp.to/snuffle/design.pdf)
-
-### Install
-```
-npm install js-salsa20 --save
-```
+- [Chacha20 and Poly1305 Spec](https://tools.ietf.org/html/rfc7539)
+- [Poly1305 and AEAD implementation](https://github.com/devi/chacha20poly1305/blob/master/chacha20poly1305.js)
 
 ### Usage
 Encrypt message with key and nonce
