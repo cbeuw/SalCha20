@@ -1,4 +1,3 @@
-'use strict'
 /*
  * Copyright (c) 2017, Bubelich Mykola
  * https://www.bubelich.com
@@ -6,7 +5,7 @@
  * (｡◕‿‿◕｡)
  *
  * Modified by cbeuw (Andy Wang)
- * 
+ *
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,18 +55,18 @@
  * @param {Uint8Array} key
  * @param {Uint8Array} nonce
  */
-var Salsa20 = function (key, nonce) {
-  if (!(key instanceof Uint8Array) || key.length !== 32) {
-    throw new Error('Key should be 32 byte array!')
-  }
+const Salsa20 = function (key, nonce) {
+    if (!(key instanceof Uint8Array) || key.length !== 32) {
+        throw new Error("Key should be 32 byte array!");
+    }
 
-  if (!(nonce instanceof Uint8Array) || nonce.length !== 8) {
-    throw new Error('Nonce should be 8 byte array!')
-  }
+    if (!(nonce instanceof Uint8Array) || nonce.length !== 8) {
+        throw new Error("Nonce should be 8 byte array!");
+    }
 
-  this.rounds = 20
-  this.sigma = [0x61707865, 0x3320646e, 0x79622d32, 0x6b206574]
-  this.param = [
+    this.rounds = 20;
+    this.sigma = [0x61707865, 0x3320646e, 0x79622d32, 0x6b206574];
+    this.param = [
     // Constant
     this.sigma[0],
     // Key
@@ -91,19 +90,19 @@ var Salsa20 = function (key, nonce) {
     _get32(key, 28),
     // Const
     this.sigma[3]
-  ]
+    ];
 
   // init block 64 bytes //
-  this.block = [
+    this.block = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  ]
+    ];
 
   // internal byte counter //
-  this.byteCounter = 0
-}
+    this.byteCounter = 0;
+};
 
 /**
  *  Encrypt or Decrypt data with key and nonce
@@ -113,25 +112,25 @@ var Salsa20 = function (key, nonce) {
  * @private
  */
 Salsa20.prototype._update = function (data) {
-  if (!(data instanceof Uint8Array) || data.length === 0) {
-    throw new Error('Data should be type of bytes (Uint8Array) and not empty!')
-  }
-
-  var output = new Uint8Array(data.length)
-
-  // core function, build block and xor with input data //
-  for (var i = 0; i < data.length; i++) {
-    if (this.byteCounter === 0 || this.byteCounter === 64) {
-      this._salsa()
-      this._counterIncrement()
-      this.byteCounter = 0
+    if (!(data instanceof Uint8Array) || data.length === 0) {
+        throw new Error("Data should be type of bytes (Uint8Array) and not empty!");
     }
 
-    output[i] = data[i] ^ this.block[this.byteCounter++]
-  }
+    const output = new Uint8Array(data.length);
 
-  return output
-}
+  // core function, build block and xor with input data //
+    for (let i = 0; i < data.length; i++) {
+        if (this.byteCounter === 0 || this.byteCounter === 64) {
+            this._salsa();
+            this._counterIncrement();
+            this.byteCounter = 0;
+        }
+
+        output[i] = data[i] ^ this.block[this.byteCounter++];
+    }
+
+    return output;
+};
 /**
  *  Encrypt data with key and nonce
  *
@@ -139,8 +138,8 @@ Salsa20.prototype._update = function (data) {
  * @return {Uint8Array}
  */
 Salsa20.prototype.encrypt = function (data) {
-  return this._update(data)
-}
+    return this._update(data);
+};
 
 /**
  *  Decrypt data with key and nonce
@@ -149,57 +148,57 @@ Salsa20.prototype.encrypt = function (data) {
  * @return {Uint8Array}
  */
 Salsa20.prototype.decrypt = function (data) {
-  return this._update(data)
-}
+    return this._update(data);
+};
 
 Salsa20.prototype._counterIncrement = function () {
   // Max possible blocks is 2^64
-  this.param[8] = (this.param[8] + 1) >>> 0
-  if (this.param[8] === 0) {
-    this.param[9] = (this.param[9] + 1) >>> 0
-  }
-}
+    this.param[8] = (this.param[8] + 1) >>> 0;
+    if (this.param[8] === 0) {
+        this.param[9] = (this.param[9] + 1) >>> 0;
+    }
+};
 
 Salsa20.prototype._salsa = function () {
-  var mix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  var i = 0
-  var b = 0
+    const mix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let i = 0;
+    let b = 0;
 
-  const qr = function (a, b, c, d) {
-    mix[b] ^= _rotl(mix[a] + mix[d], 7) >>> 0
-    mix[c] ^= _rotl(mix[b] + mix[a], 9) >>> 0
-    mix[d] ^= _rotl(mix[c] + mix[b], 13) >>> 0
-    mix[a] ^= _rotl(mix[d] + mix[c], 18) >>> 0
-  }
+    const qr = function (a, b, c, d) {
+        mix[b] ^= _rotl(mix[a] + mix[d], 7) >>> 0;
+        mix[c] ^= _rotl(mix[b] + mix[a], 9) >>> 0;
+        mix[d] ^= _rotl(mix[c] + mix[b], 13) >>> 0;
+        mix[a] ^= _rotl(mix[d] + mix[c], 18) >>> 0;
+    };
 
   // copy param array to mix //
-  for (i = 0; i < 16; i++) {
-    mix[i] = this.param[i]
-  }
+    for (i = 0; i < 16; i++) {
+        mix[i] = this.param[i];
+    }
 
   // mix rounds //
-  for (i = 0; i < this.rounds; i += 2) {
-    qr(0, 4, 8, 12)
-    qr(5, 9, 13, 1)
-    qr(10, 14, 2, 6)
-    qr(15, 3, 7, 11)
-    qr(0, 1, 2, 3)
-    qr(5, 6, 7, 4)
-    qr(10, 11, 8, 9)
-    qr(15, 12, 13, 14)
-  }
+    for (i = 0; i < this.rounds; i += 2) {
+        qr(0, 4, 8, 12);
+        qr(5, 9, 13, 1);
+        qr(10, 14, 2, 6);
+        qr(15, 3, 7, 11);
+        qr(0, 1, 2, 3);
+        qr(5, 6, 7, 4);
+        qr(10, 11, 8, 9);
+        qr(15, 12, 13, 14);
+    }
 
-  for (i = 0; i < 16; i++) {
+    for (i = 0; i < 16; i++) {
     // add
-    mix[i] += this.param[i]
+        mix[i] += this.param[i];
 
     // store
-    this.block[b++] = mix[i] & 0xFF
-    this.block[b++] = (mix[i] >>> 8) & 0xFF
-    this.block[b++] = (mix[i] >>> 16) & 0xFF
-    this.block[b++] = (mix[i] >>> 24) & 0xFF
-  }
-}
+        this.block[b++] = mix[i] & 0xFF;
+        this.block[b++] = (mix[i] >>> 8) & 0xFF;
+        this.block[b++] = (mix[i] >>> 16) & 0xFF;
+        this.block[b++] = (mix[i] >>> 24) & 0xFF;
+    }
+};
 
 /**
  * Little-endian to uint 32 bytes
@@ -210,8 +209,8 @@ Salsa20.prototype._salsa = function () {
  * @private
  */
 const _get32 = function (data, index) {
-  return data[index++] ^ (data[index++] << 8) ^ (data[index++] << 16) ^ (data[index] << 24)
-}
+    return data[index++] ^ (data[index++] << 8) ^ (data[index++] << 16) ^ (data[index] << 24);
+};
 
 /**
  * Cyclic left rotation
@@ -222,7 +221,8 @@ const _get32 = function (data, index) {
  * @private
  */
 const _rotl = function (data, shift) {
-  return ((data << shift) | (data >>> (32 - shift)))
-}
+    return ((data << shift) | (data >>> (32 - shift)));
+};
 
 export default Salsa20
+;
