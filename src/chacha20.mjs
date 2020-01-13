@@ -1,3 +1,50 @@
+/*
+ * Copyright (c) 2017, Bubelich Mykola
+ * https://www.bubelich.com
+ *
+ * (｡◕‿‿◕｡)
+ *
+ * Modified by cbeuw (Andy Wang)
+ * 
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * Neither the name of the copyright holder nor the names of its contributors
+ * may be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * General information
+ * Salsa20 is a stream cipher submitted to eSTREAM by Daniel J. Bernstein.
+ * It is built on a pseudorandom function based on add-rotate-xor (ARX) operations — 32-bit addition,
+ * bitwise addition (XOR) and rotation operations. Salsa20 maps a 256-bit key, a 64-bit nonce,
+ * and a 64-bit stream position to a 512-bit block of the key stream (a version with a 128-bit key also exists).
+ * This gives Salsa20 the unusual advantage that the user can efficiently seek to any position in the key
+ * stream in constant time. It offers speeds of around 4–14 cycles per byte in software on modern x86 processors,
+ * and reasonable hardware performance. It is not patented, and Bernstein has written several
+ * public domain implementations optimized for common architectures.
+ */
+
 /**
  * Construct Chacha20 instance with key and nonce
  * Key should be Uint8Array with 32 bytes

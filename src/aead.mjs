@@ -3,6 +3,7 @@ import Chacha20 from "./chacha20.mjs"
 
 // https://github.com/devi/chacha20poly1305/blob/master/chacha20poly1305.js
 // Written in 2014 by Devi Mandiri. Public domain.
+// Modified by cbeuw (Andy Wang)
 
 var Chacha20Poly1305 = function (key, nonce) {
     this.chachaKey = key
